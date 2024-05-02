@@ -1,0 +1,7 @@
+1 - Não deve fazer um pedido com cpf inválido OK
+2 - Deve fazer um pedido com 3 items (com descrição, preço e quantidade) OK
+3 - Deve fazer um pedido com cupom de desconto (percentual sobre o total do pedido) OK
+4 - Não deve aplicar cupom de desconto expirado OK
+5 - Deve calcular o valor do frete com base nas dimensões (altura, largura e profundidade em cm) 
+e o peso dos produtos (em kg) OK
+6 - Deve retornar o preço mínimo de frete caso ele seja superior ao valor calculado OK
