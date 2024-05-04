@@ -9,7 +9,7 @@ export default class PlaceOrder {
   constructor(
     readonly itemRepository: ItemRepository,
     readonly orderRepository: OrderRepository,
-    readonly couponRepository:CouponRepository
+    readonly couponRepository: CouponRepository
   ) {}
   async execute(input: PlaceOrderInput): Promise<PlaceOrderOutput> {
     const order = new Order(input.cpf, input.date);
@@ -18,10 +18,10 @@ export default class PlaceOrder {
       if (!item) throw new Error("Item not found");
       order.addItem(item, orderItem.quantity);
     }
-    if(input.coupon){
+    if (input.coupon) {
       const coupon = await this.couponRepository.findByCode(input.coupon);
-      if(!coupon) throw new Error("Coupon not found");
-      order.addCoupon(coupon)
+      if (!coupon) throw new Error("Coupon not found");
+      order.addCoupon(coupon);
     }
     await this.orderRepository.save(order);
     const total = order.getTotal();
