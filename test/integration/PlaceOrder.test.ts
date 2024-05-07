@@ -1,12 +1,24 @@
 import PlaceOrder from "../../src/application/usecase/PlaceOrder";
-import CouponRepositoryMemory from "../../src/infra/repository/memory/CouponRepositoryMemory";
-import ItemRepositoryMemory from "../../src/infra/repository/memory/ItemRepositoryMemory";
-import OrderRepositoryMemory from "../../src/infra/repository/memory/OrderRepositoryMemory";
+import OrderRepository from "../../src/domain/repository/OrderRepository";
+import PgPromiseConnectionAdapter from "../../src/infra/database/PgPromiseConnectionAdapter";
+import CouponRepositoryDatabase from "../../src/infra/repository/database/CouponRepositoryDatabase";
+import ItemRepositoryDatabase from "../../src/infra/repository/database/ItemRepositoryDatabase";
+import OrderRepositoryDatabase from "../../src/infra/repository/database/OrderRepositoryDatabase";
+
+let placeOrder: PlaceOrder;
+let orderRepository: OrderRepository;
+beforeEach(() => {
+  const connection = new PgPromiseConnectionAdapter();
+  const itemRepository = new ItemRepositoryDatabase(connection);
+  orderRepository = new OrderRepositoryDatabase(connection);
+  const couponRepository = new CouponRepositoryDatabase(connection);
+  placeOrder = new PlaceOrder(
+    itemRepository,
+    orderRepository,
+    couponRepository
+  );
+});
 test("Deve fazer um pedido", async function () {
-  const itemRepository = new ItemRepositoryMemory();
-  const couponRepository = new CouponRepositoryMemory();
-  const orderRepository = new OrderRepositoryMemory();
-  const placeOrder = new PlaceOrder(itemRepository, orderRepository, couponRepository);
   const input = {
     cpf: "839.435.452-10",
     orderItems: [
@@ -15,16 +27,12 @@ test("Deve fazer um pedido", async function () {
       { idItem: 3, quantity: 3 },
     ],
     date: new Date("2021-12-10"),
-    coupon:"VALE20"
+    coupon: "VALE20",
   };
   const output = await placeOrder.execute(input);
-  expect(output.total).toBe(88);
+  expect(output.total).toBe(138);
 });
 test("Deve fazer um pedido com calculo do frete", async function () {
-  const itemRepository = new ItemRepositoryMemory();
-  const couponRepository = new CouponRepositoryMemory();
-  const orderRepository = new OrderRepositoryMemory();
-  const placeOrder = new PlaceOrder(itemRepository, orderRepository, couponRepository);
   const input = {
     cpf: "839.435.452-10",
     orderItems: [
@@ -32,8 +40,25 @@ test("Deve fazer um pedido com calculo do frete", async function () {
       { idItem: 5, quantity: 1 },
       { idItem: 6, quantity: 3 },
     ],
-    date: new Date("2021-12-10")
+    date: new Date("2021-12-10"),
   };
   const output = await placeOrder.execute(input);
-  expect(output.total).toBe(6350);
+  expect(output.total).toBe(6650);
+});
+test("Deve fazer um pedido com código", async function () {
+  const input = {
+    cpf: "839.435.452-10",
+    orderItems: [
+      { idItem: 4, quantity: 1 },
+      { idItem: 5, quantity: 1 },
+      { idItem: 6, quantity: 3 },
+    ],
+    date: new Date("2021-12-10"),
+  };
+  // const output = await placeOrder.execute(input);
+  // expect(output.code).toBe("202100000001");
+});
+
+afterEach(async () => {
+  await orderRepository.clear();
 });

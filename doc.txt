@@ -5,3 +5,16 @@
 5 - Deve calcular o valor do frete com base nas dimensões (altura, largura e profundidade em cm) 
 e o peso dos produtos (em kg) OK
 6 - Deve retornar o preço mínimo de frete caso ele seja superior ao valor calculado OK
+7 - Deve gerar o código do pedido
+8 - Deve fazer um pedido(caso de uso)
+9 - Deve simular o frete(caso de uso)
+10 - Deve validar o cupom de desconto(caso de uso)
+
+### Considere
+* O código do pedido é formado por AAAAPPPPPP onde AAAA representa o ano e o 
+PPPPPPP representa um sequencial do pedido
+*Implementar um mecanismo de persistência desacoplado utilizando banco de dados
+
+#### Importante
+* Implemente os testes de unidade que faltam para cada uma das entities
+* Implemente os DTOs para cada um dos use cases
