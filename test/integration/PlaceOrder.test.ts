@@ -1,4 +1,4 @@
-import PlaceOrder from "../../src/application/usecase/PlaceOrder";
+import PlaceOrder from "../../src/application/usecase/place_order/PlaceOrder";
 import OrderRepository from "../../src/domain/repository/OrderRepository";
 import PgPromiseConnectionAdapter from "../../src/infra/database/PgPromiseConnectionAdapter";
 import CouponRepositoryDatabase from "../../src/infra/repository/database/CouponRepositoryDatabase";
@@ -8,7 +8,7 @@ import OrderRepositoryDatabase from "../../src/infra/repository/database/OrderRe
 let placeOrder: PlaceOrder;
 let orderRepository: OrderRepository;
 beforeEach(() => {
-  const connection = new PgPromiseConnectionAdapter();
+  const connection = PgPromiseConnectionAdapter.getInstance();
   const itemRepository = new ItemRepositoryDatabase(connection);
   orderRepository = new OrderRepositoryDatabase(connection);
   const couponRepository = new CouponRepositoryDatabase(connection);
@@ -55,8 +55,8 @@ test("Deve fazer um pedido com código", async function () {
     ],
     date: new Date("2021-12-10"),
   };
-  // const output = await placeOrder.execute(input);
-  // expect(output.code).toBe("202100000001");
+  const output = await placeOrder.execute(input);
+  expect(output.code).toBe("202100000001");
 });
 
 afterEach(async () => {
